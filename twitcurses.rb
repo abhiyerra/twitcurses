@@ -2,9 +2,12 @@
 
 # TODO
 #   - different colors for individuals
-#   - show replies
 #   - show current length of the tweet
-#   - reply feature?
+##   - mentions page
+#       - all the mentions
+#       - color. if a reply has been made then normal
+#               if a reply has not been made then yellow or red
+#
 #
 require 'rubygems'
 require 'yaml'
