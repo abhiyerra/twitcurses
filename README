@@ -3,3 +3,10 @@ Twitcurses
 
 A ncurses based Twitter client.
 
+Commands:
+ESC - quit
+R - refresh timeline
+S - new tweet
+
+Requirements:
+gem install twitter
