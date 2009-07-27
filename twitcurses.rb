@@ -3,8 +3,6 @@
 # TODO
 #   - different colors for individuals
 #   - show replies
-#   - refresh every so often - Thread
-#   - read from a config file
 #   - show current length of the tweet
 #   - reply feature?
 #
@@ -26,7 +24,6 @@ def update_timeline
   Curses.addstr "Last updated: #{Time.now}\n"
 
   @twitter.friends_timeline.each do |tweet|
-    #Curses.addstr "#{tweet.user.screen_name}[: #{tweet.text}\n"
     Curses.addstr "#{tweet.user.screen_name}: #{tweet.text}\n"
   end
 end
@@ -47,13 +44,20 @@ end
 
 begin
   @config = YAML::load_file(ConfigFile)
+
   @twitter = Twitter::Base.new(Twitter::HTTPAuth.new(@config["username"], @config["password"]))
 
   Curses.init_screen
   Curses.start_color
   Curses.setpos(0, 0)
 
-  update_timeline
+  Thread.new do 
+    loop do
+      update_timeline
+      Curses.refresh
+      sleep @config["refresh-rate"]
+    end
+  end
 
   while true
     c = Curses.getch
