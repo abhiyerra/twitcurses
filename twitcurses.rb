@@ -5,6 +5,7 @@
 #   - show replies
 #   - refresh every so often - Thread
 #   - read from a config file
+#   - show current length of the tweet
 #   - reply feature?
 #
 require 'rubygems'
@@ -13,12 +14,7 @@ require 'curses'
 require 'twitter'
 require 'highline/import'
 
-#ConfigFile = "#{ENV['HOME']}/.twitcurses"
-
-#@config = YAML::load(ConfigFile)
-
-TwitterUsername = 'TWITTER'
-TwitterPassword = 'PASSWORD'
+ConfigFile = "#{ENV['HOME']}/.twitcurses"
 
 def header
   Curses::addstr("Twitcurses by abhiyerra\n\n")
@@ -50,7 +46,8 @@ def update_status
 end
 
 begin
-  @twitter = Twitter::Base.new(Twitter::HTTPAuth.new(TwitterUsername, TwitterPassword))
+  @config = YAML::load_file(ConfigFile)
+  @twitter = Twitter::Base.new(Twitter::HTTPAuth.new(@config["username"], @config["password"]))
 
   Curses.init_screen
   Curses.start_color

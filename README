@@ -3,6 +3,8 @@ Twitcurses
 
 A ncurses based Twitter client.
 
+Move the dot.twitcurses to $HOME/.twitcurses and add your twitter username and password to the file.
+
 Commands:
 ESC - quit
 R - refresh timeline
