@@ -18,6 +18,25 @@ def header
   Curses::addstr("Twitcurses by abhiyerra\n\n")
 end
 
+def create_refresher_thread
+  @refresher = Thread.new do 
+    loop do
+      update_timeline
+      Curses.refresh
+      sleep @config["refresh-rate"]
+    end
+  end
+end
+
+def destroy_refresher_thread
+  Thread.kill @refresher
+end
+
+def restart_refresher_thread
+  destroy_refresher_thread
+  create_refresher_thread
+end
+
 def update_timeline
   Curses.clear
   header
@@ -29,7 +48,8 @@ def update_timeline
 end
 
 def update_status
-  Curses.deleteln
+  destroy_refresher_thread
+
   Curses.deleteln
   Curses.addstr "\n"
   Curses.addstr "Enter a tweet or empty line to cancel: "
@@ -39,7 +59,7 @@ def update_status
     @twitter.update(new_tweet)
   end
 
-  update_timeline
+  create_refresher_thread
 end
 
 begin
@@ -51,21 +71,15 @@ begin
   Curses.start_color
   Curses.setpos(0, 0)
 
-  Thread.new do 
-    loop do
-      update_timeline
-      Curses.refresh
-      sleep @config["refresh-rate"]
-    end
-  end
+  create_refresher_thread
 
   while true
     c = Curses.getch
 
     case c
     when ?R
-      update_timeline
-    when ?S
+      restart_refresher_thread
+    when ?T
       update_status
     when ?\e
       Curses.clear

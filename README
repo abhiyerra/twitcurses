@@ -10,7 +10,7 @@ Note: refresh-rate is in seconds
 Commands:
 ESC - quit
 R - refresh timeline
-S - new tweet
+T - new tweet
 
 Requirements:
 gem install twitter
