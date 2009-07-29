@@ -9,11 +9,11 @@
 #               if a reply has not been made then yellow or red
 #
 #
+require 'date'
 require 'rubygems'
 require 'yaml'
 require 'curses'
 require 'twitter'
-require 'highline/import'
 
 ConfigFile = "#{ENV['HOME']}/.twitcurses"
 
@@ -46,8 +46,15 @@ def update_timeline
   Curses.addstr "Last updated: #{Time.now}\n"
 
   @twitter.friends_timeline.each do |tweet|
-    Curses.addstr "#{tweet.user.screen_name}: #{tweet.text}\n"
+    tweet_text = "#{tweet.user.screen_name}: #{tweet.text}\n"
+    Curses.addstr tweet_text
+
+    if @updated_time <= DateTime.parse(tweet.created_at)
+      `say "#{tweet_text}"`
+    end
   end
+
+  @updated_time = DateTime.parse(Time.now.to_s)
 end
 
 def update_status
@@ -69,7 +76,8 @@ begin
   @config = YAML::load_file(ConfigFile)
 
   @twitter = Twitter::Base.new(Twitter::HTTPAuth.new(@config["username"], @config["password"]))
-
+  @updated_time = DateTime.parse(Time.now.to_s)
+  
   Curses.init_screen
   Curses.start_color
   Curses.setpos(0, 0)
