@@ -1,11 +1,13 @@
-Twitcurses
+Twitcurses - A ncurses based Twitter client.
 ---
 
-A ncurses based Twitter client.
+Features:
+ * Update your account
+ * Refresh the timeline
+ * On Mac speaks your newest tweet using say command.
 
 Move the dot.twitcurses to $HOME/.twitcurses and add your twitter username and password to the file.
 Note: refresh-rate is in seconds
-
 
 Commands:
 ESC - quit
