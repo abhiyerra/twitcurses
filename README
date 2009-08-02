@@ -10,10 +10,11 @@ Move the dot.twitcurses to $HOME/.twitcurses and add your twitter username and p
 Note: refresh-rate is in seconds
 
 Commands:
-ESC - quit
-R - refresh timeline
+ESC - refresh timeline
+Q - quit
 T - new tweet
 M - mute (on Mac this prevents the say command from invoking)
+U - Show user tweets
 
 Requirements:
 gem install twitter

@@ -2,7 +2,8 @@
 
 # TODO
 #   - different colors for individuals
-#   - show current length of the tweet
+#   - show current length of the tweet/character count
+#   - url shortner
 #   - mentions page
 #       - all the mentions
 #       - color. if a reply has been made then normal
@@ -12,7 +13,6 @@
 #       - list followers
 #       - add followers
 #       - remove followers
-#   - user tweets
 #   - direct message
 require 'date'
 require 'rubygems'
@@ -64,7 +64,25 @@ def update_timeline
   @updated_time = DateTime.parse(Time.now.to_s)
 end
 
-def update_status
+def show_user_tweets
+  destroy_refresher_thread
+
+  Curses.clear
+  Curses.addstr "\n"
+  Curses.addstr "Type the screen name for user or press enter a regex to find user? "
+  screen_name = Curses.getstr
+
+  @twitter.user_timeline(:screen_name => screen_name).each do |tweet|
+    tweet_text = "#{tweet.user.screen_name}: #{tweet.text}\n"
+    Curses.addstr tweet_text
+  end
+
+  Curses.getch
+
+  create_refresher_thread
+end
+
+def new_tweet
   destroy_refresher_thread
 
   Curses.deleteln
@@ -87,6 +105,7 @@ begin
   @config = YAML::load_file(ConfigFile)
 
   @twitter = Twitter::Base.new(Twitter::HTTPAuth.new(@config["username"], @config["password"]))
+  
   @updated_time = DateTime.parse(Time.now.to_s)
   @mute_say = false
   
@@ -100,13 +119,15 @@ begin
     c = Curses.getch
 
     case c
-    when ?R
+    when ?\e
       restart_refresher_thread
+    when ?U
+      show_user_tweets
     when ?T
-      update_status
+      new_tweet
     when ?M
       mute_say
-    when ?\e
+    when ?Q
       Curses.clear
       exit
     end
