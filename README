@@ -13,6 +13,7 @@ Commands:
 ESC - quit
 R - refresh timeline
 T - new tweet
+M - mute (on Mac this prevents the say command from invoking)
 
 Requirements:
 gem install twitter

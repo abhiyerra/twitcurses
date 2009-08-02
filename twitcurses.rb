@@ -3,12 +3,17 @@
 # TODO
 #   - different colors for individuals
 #   - show current length of the tweet
-##   - mentions page
+#   - mentions page
 #       - all the mentions
 #       - color. if a reply has been made then normal
 #               if a reply has not been made then yellow or red
-#
-#
+#   - search
+#   - followers
+#       - list followers
+#       - add followers
+#       - remove followers
+#   - user tweets
+#   - direct message
 require 'date'
 require 'rubygems'
 require 'yaml'
@@ -50,7 +55,9 @@ def update_timeline
     Curses.addstr tweet_text
 
     if @updated_time <= DateTime.parse(tweet.created_at)
-      `say "#{tweet_text}"`
+      unless @mute_say
+        `say "#{tweet_text}"`
+      end
     end
   end
 
@@ -72,11 +79,16 @@ def update_status
   create_refresher_thread
 end
 
+def mute_say
+  @mute_say = !@mute_say
+end
+
 begin
   @config = YAML::load_file(ConfigFile)
 
   @twitter = Twitter::Base.new(Twitter::HTTPAuth.new(@config["username"], @config["password"]))
   @updated_time = DateTime.parse(Time.now.to_s)
+  @mute_say = false
   
   Curses.init_screen
   Curses.start_color
@@ -92,6 +104,8 @@ begin
       restart_refresher_thread
     when ?T
       update_status
+    when ?M
+      mute_say
     when ?\e
       Curses.clear
       exit
