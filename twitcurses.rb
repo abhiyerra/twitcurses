@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
 # TODO
+#   - Add optparse
 #   - different colors for individuals
 #   - show current length of the tweet/character count
-#   - url shortner
 #   - mentions page
 #       - all the mentions
 #       - color. if a reply has been made then normal
@@ -18,6 +18,7 @@ require 'date'
 require 'rubygems'
 require 'yaml'
 require 'curses'
+require 'open-uri'
 require 'twitter'
 
 ConfigFile = "#{ENV['HOME']}/.twitcurses"
@@ -86,9 +87,17 @@ def new_tweet
   destroy_refresher_thread
 
   Curses.deleteln
+
   Curses.addstr "\n"
-  Curses.addstr "Enter a tweet or empty line to cancel: "
+  Curses.addstr "Type a tweet or an empty line to cancel: "
   new_tweet = Curses.getstr
+
+  urls = Regexp.compile('(https?|ftp|file)://[-A-Z0-9+&@#/%?=~_|!:,.;]*[A-Z0-9+&@#/%=~_|]', Regexp::IGNORECASE|Regexp::EXTENDED).match(new_tweet)
+  
+  unless urls.nil?
+    shorturl = open("http://bit.ly/api?url=#{urls[0]}").read
+    new_tweet = new_tweet.gsub(urls[0], shorturl)
+  end
 
   unless new_tweet.eql? ''
     @twitter.update(new_tweet)

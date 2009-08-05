@@ -5,6 +5,7 @@ Features:
  * Update your account
  * Refresh the timeline
  * On Mac speaks your newest tweet using say command.
+ * If you enter a link in your tweet it automatically shortens it.
 
 Move the dot.twitcurses to $HOME/.twitcurses and add your twitter username and password to the file.
 Note: refresh-rate is in seconds
