@@ -124,7 +124,7 @@ begin
 
   create_refresher_thread
 
-  while true
+  loop do
     c = Curses.getch
 
     case c
